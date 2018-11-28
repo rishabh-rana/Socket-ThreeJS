@@ -1,0 +1,85 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+
+</style>
+</head>
+<body>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+
+  document.body.addEventListener('touchmove', function(event) {
+          event.preventDefault();
+        }, false);
+
+        var stage = document.getElementById('stage');
+        var mc = new Hammer.Manager(stage);
+
+        var rotate = new Hammer.Rotate();
+        var pinch = new Hammer.Pinch();
+        var pan = new Hammer.Pan();
+
+        mc.add([pinch, pan, rotate]);
+        mc.get('pinch').set({ enable: true })
+        mc.get('rotate').set({ enable: true })
+
+        var adjustScale = 1;
+        var currentScale = null;
+        var currentRotation = null;
+        var adjustRotation = 0;
+
+        var adjustDeltaX = 0;
+        var adjustDeltaY = 0;
+        var currentDeltaX = null;
+        var currentDeltaY = null;
+
+        mc.on("pinch pan rotate", function(e) {
+          var transforms = [];
+          // var rotation = currentRotation + Math.round(e.rotation);
+
+          currentRotation = adjustRotation + Math.round(e.rotation);
+          currentScale = adjustScale * e.scale;
+          currentDeltaX = adjustDeltaX + (e.deltaX / currentScale);
+          currentDeltaY = adjustDeltaY + (e.deltaY / currentScale);
+
+          transforms.push('scale(' + currentScale + ')');
+          transforms.push('translate(' + currentDeltaX + 'px,' + currentDeltaY + 'px)');
+          transforms.push('rotate('+currentRotation+'deg)');
+          stage.style.transform = transforms.join(' ');
+
+        })
+
+        mc.on("panend pinchend rotateend", function(e) {
+          adjustScale = currentScale;
+          adjustRotation = currentRotation;
+          adjustDeltaX = currentDeltaX;
+          adjustDeltaY = currentDeltaY;
+
+        })
+
+
+
+</script>
+</body>
+</html>

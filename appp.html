@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Canjuice</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+#stage {
+  width: 200px;
+  height: 300px;
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+
+  <div class="outer">
+    <div class="container">
+      <div>
+        <div class="border">
+          <img id="stage"
+            src="https://images.unsplash.com/photo-1440589473619-3cde28941638?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=42ebdb92a644e864e032a2ebccaa25b6&auto=format&fit=crop&w=334&q=80"
+            class="image">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<script>
+document.body.addEventListener('touchmove', function(event) {
+        event.preventDefault();
+      }, false);
+
+      var stage = document.getElementById('stage');
+      var mc = new Hammer.Manager(stage);
+
+      var rotate = new Hammer.Rotate();
+      var pinch = new Hammer.Pinch();
+      var pan = new Hammer.Pan();
+
+      mc.add([pinch, pan, rotate]);
+      mc.get('pinch').set({ enable: true })
+      mc.get('rotate').set({ enable: true })
+
+      var adjustScale = 1;
+      var currentScale = null;
+      var currentRotation = null;
+      var adjustRotation = 0;
+
+      var adjustDeltaX = 0;
+      var adjustDeltaY = 0;
+      var currentDeltaX = null;
+      var currentDeltaY = null;
+
+      mc.on("pinch pan rotate", function(e) {
+        var transforms = [];
+        // var rotation = currentRotation + Math.round(e.rotation);
+
+        currentRotation = adjustRotation + Math.round(e.rotation);
+        currentScale = adjustScale * e.scale;
+        currentDeltaX = adjustDeltaX + (e.deltaX / currentScale);
+        currentDeltaY = adjustDeltaY + (e.deltaY / currentScale);
+
+        transforms.push('scale(' + currentScale + ')');
+        transforms.push('translate(' + currentDeltaX + 'px,' + currentDeltaY + 'px)');
+        transforms.push('rotate('+currentRotation+'deg)');
+        stage.style.transform = transforms.join(' ');
+
+      })
+
+      mc.on("panend pinchend rotateend", function(e) {
+        adjustScale = currentScale;
+        adjustRotation = currentRotation;
+        adjustDeltaX = currentDeltaX;
+        adjustDeltaY = currentDeltaY;
+
+      })
+</script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Canjuice</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/interactjs@1.3.4/dist/interact.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <script>
+    !function(a){function f(a,b){if(!(a.originalEvent.touches.length>1)){a.preventDefault();var c=a.originalEvent.changedTouches[0],d=document.createEvent("MouseEvents");d.initMouseEvent(b,!0,!0,window,1,c.screenX,c.screenY,c.clientX,c.clientY,!1,!1,!1,!1,0,null),a.target.dispatchEvent(d)}}if(a.support.touch="ontouchend"in document,a.support.touch){var e,b=a.ui.mouse.prototype,c=b._mouseInit,d=b._mouseDestroy;b._touchStart=function(a){var b=this;!e&&b._mouseCapture(a.originalEvent.changedTouches[0])&&(e=!0,b._touchMoved=!1,f(a,"mouseover"),f(a,"mousemove"),f(a,"mousedown"))},b._touchMove=function(a){e&&(this._touchMoved=!0,f(a,"mousemove"))},b._touchEnd=function(a){e&&(f(a,"mouseup"),f(a,"mouseout"),this._touchMoved||f(a,"click"),e=!1)},b._mouseInit=function(){var b=this;b.element.bind({touchstart:a.proxy(b,"_touchStart"),touchmove:a.proxy(b,"_touchMove"),touchend:a.proxy(b,"_touchEnd")}),c.call(b)},b._mouseDestroy=function(){var b=this;b.element.unbind({touchstart:a.proxy(b,"_touchStart"),touchmove:a.proxy(b,"_touchMove"),touchend:a.proxy(b,"_touchEnd")}),d.call(b)}}}(jQuery);
+    </script>
+
+  <style>
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  #designarea{
+    height: 500px;
+    width: 100%;
+    border: 1px solid black;
+  }
+  #gesture-area {
+    width: 100%;
+    height: 200px;
+  }
+  .active{
+    box-shadow: 0 0 10px dodgerblue;
+  }
+  .tshirt{
+   background-image: url('https://5.imimg.com/data5/BW/CC/MY-12894522/white-plain-t-shirt-500x500.jpg');
+   background-position: center;
+   background-repeat:no-repeat;
+   background-size: cover;
+
+   width: 100%;
+   height: 100%;
+}
+  .burgerinside {
+    border: 2px solid red;
+    width: 100%;
+    min-height: 100px;
+  }
+
+  .draggable2 {
+    background: grey;
+    border: 2px solid black;
+
+  }
+
+  .draggablecss {
+  width: 120px;
+  height: 120px;
+  min-height: 6.5em;
+  margin: 10%;
+  position: absolute;
+  background-color: #29e;
+  color: white;
+
+  border-radius: 0.75em;
+  padding: 4%;
+
+
+}
+
+#drag-me::before {
+  content: "#" attr(id);
+  font-weight: bold;
+}
+
+.dragging-container,
+.dragging-container * {
+  -ms-touch-action: none;
+  touch-action: none;
+}
+  </style>
+</head>
+<body>
+
+  <div class='row'>
+
+    <div class='col-2'>
+      <ul >
+  <li class="draggable2">HEY</li>
+  <li class="draggable2">YO</li>
+  <li class="draggable2">KJBSBS</li>
+  <li class="draggable2">FUKNK</li>
+  <li class="draggable2">KJBSKJB</li>
+
+
+</ul>
+
+    </div>
+    <div class='col-8'>
+      <div class='dragging-container' id='designarea'>
+        <div class = 'col-md-8 layout tshirt'>
+        <div id='gesture-area'>
+          <div id="drag-1" class="draggablecss">
+          <p> You can drag one element </p>
+        </div>
+        </div>
+      </div>
+
+
+               <button type="button" class="btn btn-primary" id='zoom'>Rezise</button>
+               <button type="button" class="btn btn-primary" id='rotate'>rotate</button>
+
+
+
+      </div>
+    </div>
+
+    <div class='col-2'>
+      <ul id="sortable" class='burgerinside'>
+        </ul>
+    </div>
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <script>
+  function dragMoveListener (event) {
+    var target = event.target,
+        // keep the dragged position in the data-x/data-y attributes
+        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    // translate the element
+    target.style.webkitTransform =
+    target.style.transform =
+      'translate(' + x + 'px, ' + y + 'px)';
+
+    // update the posiion attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+  }
+
+  // this is used later in the resizing and gesture demos
+  window.dragMoveListener = dragMoveListener;
+
+
+
+  var angle = 0;
+  var scale = 1,
+    gestureArea = document.getElementById('gesture-area'),
+    scaleElement = document.getElementById('drag-1'),
+    resetTimeout;
+
+
+interact(gestureArea)
+  .gesturable({
+    onstart: function (event) {
+      clearTimeout(resetTimeout);
+      scaleElement.classList.remove('reset');
+    },
+    onmove: function (event) {
+      scale = scale * (1 + event.ds/5);
+
+      scaleElement.style.webkitTransform =
+      scaleElement.style.transform =
+        'scale(' + scale + ') rotate('+angle+'deg)';
+
+      dragMoveListener(event);
+    },
+    onend: function (event) {
+      resetTimeout = setTimeout(reset, 100000);
+      scaleElement.classList.add('reset');
+    }
+  })
+  .draggable({ onmove: dragMoveListener });
+
+function reset () {
+  scale = 1;
+  scaleElement.style.webkitTransform =
+  scaleElement.style.transform =
+    'scale(1)';
+}
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  var active = null;
+  var objid = null;
+
+
+  $('#sortable').on('click', 'li', function(event){
+
+    if(objid){
+      $(`#${objid}`).removeClass("active");
+    }
+
+    active = $(this).attr('id');
+    objid = 'a' + active.slice(1);
+    console.log(objid)
+    $(`#${objid}`).addClass("active");
+  } )
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script >
+
+  $('#zoom').click( function() {
+    console.log('d')
+
+
+      gestureArea = document.getElementById('gesture-area'),
+      scaleElement = document.getElementById('drag-1'),
+      resetTimeout;
+      interact(gestureArea).unset();
+      interact(scaleElement).unset();
+
+  interact(gestureArea)
+    .gesturable({
+      onstart: function (event) {
+        clearTimeout(resetTimeout);
+        scaleElement.classList.remove('reset');
+      },
+      onmove: function (event) {
+        scale = scale * (1 + event.ds/8);
+
+        scaleElement.style.webkitTransform =
+        scaleElement.style.transform =
+          'scale(' + scale + ') rotate('+angle+'deg)';
+
+        dragMoveListener(event);
+      },
+      onend: function (event) {
+        resetTimeout = setTimeout(reset, 100000);
+        scaleElement.classList.add('reset');
+      }
+    })
+    .draggable({ onmove: dragMoveListener });
+
+  function reset () {
+    scale = 1;
+    scaleElement.style.webkitTransform =
+    scaleElement.style.transform =
+      'scale(1)';
+  }
+  })
+
+  $('#rotate').click( function() {
+    console.log('g')
+    interact("#gesture-area").unset();
+    interact("#drag-1").unset();
+    var gestureArea = document.getElementById('gesture-area')
+    var element = document.getElementById('drag-1')
+
+    interact(gestureArea).unset();
+    interact(element).unset();
+
+
+    interact(gestureArea).gesturable({
+      onmove: function (event) {
+        var arrow = element;
+
+        angle += event.da;
+
+        arrow.style.webkitTransform =
+        arrow.style.transform =
+          'scale(' + scale + ') rotate('+angle+'deg)';
+
+
+      }
+    });
+
+  })
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+  // target elements with the "draggable" class
+  function initdrag (idofitem){
+
+    interact(idofitem)
+      .draggable({
+        // enable inertial throwing
+        inertia: true,
+        // keep the element within the area of it's parent
+        restrict: {
+          restriction: "parent",
+          endOnly: true,
+          elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+        },
+        // enable autoScroll
+        autoScroll: true,
+
+        // call this function on every dragmove event
+        onmove: dragMoveListener,
+        // call this function on every dragend event
+        onend: function (event) {
+        }
+      });
+
+      function dragMoveListener (event) {
+        var target = event.target,
+            // keep the dragged position in the data-x/data-y attributes
+            x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+            y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+        // translate the element
+        target.style.webkitTransform =
+        target.style.transform =
+          'translate(' + x + 'px, ' + y + 'px)';
+
+        // update the posiion attributes
+        target.setAttribute('data-x', x);
+        target.setAttribute('data-y', y);
+      }
+
+      // this is used later in the resizing and gesture demos
+      window.dragMoveListener = dragMoveListener;
+  }
+
+  </script>
+
+  <script>
+  var sortableIn = 0;
+  var tagger = 0;
+  $(function() {
+    $("#sortable").sortable({
+      revert: false,
+      receive: function(event, ui)
+        {
+          // what todo when we recieve an element
+          sortableIn = 1;
+          // ui.item.addClass(`x${tagger}`);
+          ui.helper.attr('id', `x${tagger}`);
+          var div = document.createElement('div');
+          div.className = 'draggablecss';
+          div.id = `a${tagger}`;
+          div.textContent = `Hello world ${tagger}`;
+          document.getElementById('designarea').appendChild(div);
+          initdrag(`#a${tagger}`);
+          tagger++;
+        },
+        over: function(event, ui)
+        {
+          sortableIn = 1;
+        },
+        out: function (event, ui) {
+            sortableIn = 0;
+        },
+        beforeStop: function(event, ui)
+      	{
+      		if (sortableIn == 0)
+      		{
+            var choosetag = ui.item.attr('id');
+            choosetag = 'a' + choosetag.slice(1);
+            document.getElementById(choosetag).remove();
+
+      			ui.item.remove();
+
+            // this removes item if dragged out
+      		}
+      	}
+    });
+
+    $(".draggable2").draggable({
+      connectToSortable: "#sortable",
+      helper: "clone",
+      revert: "invalid"
+    });
+
+    $("ul, li").disableSelection();
+  });
+
+
+  </script>
+
+</body>
+</html>

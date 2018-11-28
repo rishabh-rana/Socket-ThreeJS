@@ -3,10 +3,11 @@ var app = express();
 
 
 app.get('/', (req,res) => {
-  res.sendFile(__dirname+'/three.html');
+  res.sendFile(__dirname+'/app.html');
 })
-app.get('/ar', (req,res) => {
-  res.sendFile(__dirname+'/ar.html');
+app.get('/beta', (req,res) => {
+  res.sendFile(__dirname+'/appp.html');
 })
+
 
 app.listen(process.env.PORT || 3000, process.env.IP);
